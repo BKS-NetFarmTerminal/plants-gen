@@ -3,6 +3,7 @@ const beet = require('./src/gen/beet');
 const carrot = require('./src/gen/carrot');
 
 const gitImgPush = require('./src/gitImgPush');
+const randomAbjective = require('./src/randomAbjective');
 
 const { randomHash } = require('./src/randomHash')
 
@@ -33,7 +34,9 @@ app.get('/beet', async (req, res) => {
     try {
         const imgName = randomHash();
         const url = await main(imgName,'beet');
-        res.status(200).json({ url });
+        const name = `${randomAbjective()} ${randomAbjective()} beet`
+
+        res.status(200).json({ url, name });
     } catch (error) {
         res.status(500).json({ error: 'Failed to generate image' });
     }
@@ -43,7 +46,9 @@ app.get('/carrot', async (req, res) => {
     try {
         const imgName = randomHash();
         const url = await main(imgName,'carrot');
-        res.status(200).json({ url });
+        const name = `${randomAbjective()} ${randomAbjective()} carrot`
+
+        res.status(200).json({ url, name });
     } catch (error) {
         res.status(500).json({ error: 'Failed to generate image' });
     }
