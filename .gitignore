@@ -1,0 +1,55 @@
+# Локальные зависимости
+node_modules/
+
+# Файлы окружения
+.env
+.env.local
+.env.*.local
+
+# Логи приложения
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Временные файлы ОС
+.DS_Store
+Thumbs.db
+
+# Кэши и временные файлы
+.cache/
+.tmp/
+*.tmp
+
+# Файлы сборки/артефактов
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Тестовые снимки
+__snapshots__/
+
+# Докер-файлы (если не используются)
+# !Dockerfile
+# !docker-compose.yml
+
+# Для npm/yarn
+package-lock.json
+yarn.lock
+
+# Настройки прекоммитов
+.husky/
+
+# Для TypeScript (если используется)
+*.tsbuildinfo
