@@ -1,0 +1,19 @@
+{
+  "name": "plants-gen",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@jimp/bmp": "^0.22.12",
+    "bmp-js": "^0.1.0",
+    "express": "^5.1.0",
+    "jimp": "^1.6.0",
+    "sharp": "^0.34.1"
+  }
+}
