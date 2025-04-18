@@ -1,60 +1,58 @@
 const fs = require('fs');
 const path = require('path');
 const bmp = require('bmp-js');
+const sharp = require('sharp'); // Добавляем библиотеку масштабирования
 const colorScheme = require('./colorScheme');
-const {getRandomRGB} = require('../../randomNum')
+const { getRandomRGB } = require('../../randomNum');
 
-function genImg()  {
+// Установите библиотеку: npm install sharp
 
-    const palette = {}
+async function genImg() {
+    const palette = {};
 
-    for (key in colorScheme.default) {
+    for (const key in colorScheme.default) {
         palette[key] = getRandomRGB();
     }
 
-// 1. Чтение BMP-файла
+    // 1. Чтение и декодирование BMP
     const inputBuffer = fs.readFileSync(path.join(__dirname, 'img.bmp'));
-
-// 2. Декодирование BMP
     const bmpData = bmp.decode(inputBuffer);
-    const pixels = bmpData.data; // Данные в формате RGBA (по 4 байта на пиксель)
+    const pixels = bmpData.data;
 
-// const allColor = []
-
-// 3. Замена черных пикселей (0,0,0) на красные (255,0,0)
+    // 2. Обработка пикселей
     for (let i = 0; i < pixels.length; i += 4) {
-        const red = pixels[i];
-        const green = pixels[i + 1];
-        const blue = pixels[i + 2];
+        const r = pixels[i];
+        const g = pixels[i + 1];
+        const b = pixels[i + 2];
 
-        // добавляем все уникальные цвета в массив allColor
-        // if (!allColor.some(([r,g,b]) => r == red && g == green && b == blue)) {
-        //     allColor.push([red, green, blue]);
-        // }
-
-
-        for (key in colorScheme.default) {
-            const r = colorScheme.default[key][0];
-            const g = colorScheme.default[key][1];
-            const b = colorScheme.default[key][2];
-
-            if (r == red && g == green && b == blue) {
-                pixels[i-1] = palette[key][0];
-                pixels[i  ] = palette[key][1];
-                pixels[i + 1] = palette[key][2];
+        for (const key in colorScheme.default) {
+            const [targetR, targetG, targetB] = colorScheme.default[key];
+            if (r === targetR && g === targetG && b === targetB) {
+                pixels[i - 1] = palette[key][0];     // Red
+                pixels[i] = palette[key][1]; // Green
+                pixels[i + 1] = palette[key][2]; // Blue
             }
-
         }
     }
-// console.log(allColor)
-// 4. Кодирование обратно в BMP
-    const outputBuffer = bmp.encode(bmpData);
 
-// 5. Сохранение результата
-    fs.writeFileSync('output.bmp', outputBuffer.data);
+    // 3. Создаем PNG с увеличением в 5 раз
+    const pngBuffer = await sharp(Buffer.from(pixels), {
+        raw: {
+            width: bmpData.width,
+            height: bmpData.height,
+            channels: 4
+        }
+    })
+        .resize({
+            width: bmpData.width * 10,
+            height: bmpData.height * 10,
+            kernel: sharp.kernel.nearest // Сохраняет пиксельную графику
+        })
+        .toFormat('png')
+        .toBuffer();
 
-// convertBmpToPng('output.bmp','output.png')
-    console.log('Изображение сохранено!');
+    console.log('Изображение увеличено в 5 раз!');
+    return pngBuffer;
 }
 
 exports.genImg = genImg;
