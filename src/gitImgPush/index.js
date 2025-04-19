@@ -26,9 +26,42 @@ async function setupGit() {
     }
 }
 
+async function syncRepo() {
+    try {
+        console.log('Fetching latest changes...');
+        await git.fetch();
+
+        console.log('Pulling changes...');
+        const pullResult = await git.pull('origin', 'main', {'--rebase': 'true'});
+
+        if (pullResult.files.length > 0) {
+            console.log(`Updated ${pullResult.files.length} files`);
+        }
+        return true;
+    } catch (error) {
+        console.error('Sync error:', error.message);
+
+        // Если rebase не удался, делаем reset и повторяем pull
+        try {
+            console.log('Attempting recovery...');
+            await git.reset('hard', ['HEAD']);
+            await git.pull('origin', 'main');
+            return true;
+        } catch (recoveryError) {
+            console.error('Recovery failed:', recoveryError.message);
+            return false;
+        }
+    }
+}
+
 async function commitAndPush(imageBuffer, fileName) {
     try {
         await setupGit();
+
+        const syncSuccess = await syncRepo();
+        if (!syncSuccess) {
+            throw new Error('Failed to sync with remote repository');
+        }
 
         const imagePath = path.join(repoPath, fileName);
         fs.writeFileSync(imagePath, imageBuffer);

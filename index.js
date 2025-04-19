@@ -1,6 +1,8 @@
 const express = require('express');
 const beet = require('./src/gen/beet');
 const carrot = require('./src/gen/carrot');
+const chicken = require('./src/gen/chicken');
+
 
 const gitImgPush = require('./src/gitImgPush');
 const randomAbjective = require('./src/randomAbjective');
@@ -14,7 +16,8 @@ require('dotenv').config();
 
 const apiList = {
     beet,
-    carrot
+    carrot,
+    chicken
 }
 
 async function main(imageName, apiName) {
@@ -34,7 +37,7 @@ app.get('/beet', async (req, res) => {
     try {
         const imgName = randomHash();
         const url = await main(imgName,'beet');
-        const name = `${randomAbjective()} ${randomAbjective()} beet`
+        const name = `${randomAbjective()} ${randomAbjective()}`
 
         res.status(200).json({ url, name });
     } catch (error) {
@@ -46,7 +49,7 @@ app.get('/carrot', async (req, res) => {
     try {
         const imgName = randomHash();
         const url = await main(imgName,'carrot');
-        const name = `${randomAbjective()} ${randomAbjective()} carrot`
+        const name = `${randomAbjective()} ${randomAbjective()}`
 
         res.status(200).json({ url, name });
     } catch (error) {
@@ -54,6 +57,17 @@ app.get('/carrot', async (req, res) => {
     }
 });
 
+app.get('/chicken', async (req, res) => {
+    try {
+        const imgName = randomHash();
+        const url = await main(imgName,'chicken');
+        const name = `${randomAbjective()} ${randomAbjective()}`
+
+        res.status(200).json({ url, name });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to generate image' });
+    }
+});
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 

@@ -51,7 +51,7 @@ async function genImg() {
         .toFormat('png')
         .toBuffer();
 
-    console.log('Изображение увеличено в 5 раз!');
+    // console.log('Изображение увеличено в 5 раз!');
     return pngBuffer;
 }
 
